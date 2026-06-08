@@ -9,6 +9,9 @@ import customerRoutes from './routes/customerRoutes.js';
 import tenantUserRoutes from './routes/tenantUserRoutes.js';
 import loyaltyRoutes from './routes/loyaltyRoutes.js';
 
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
 const app = express();
 
 // Middlewares
@@ -34,6 +37,15 @@ app.use('/api/loyalty-configs', loyaltyRoutes);
 app.get('/', (req, res) => {
   res.send('⚽ ¡Servidor de FutReserva corriendo localmente con éxito! 🚀');
 });
+
+try {
+  await prisma.$connect();
+  console.log("Base de datos conectada exitosamente");
+  // Opcional: si quieres asegurar que el esquema esté sincronizado
+  // await prisma.$executeRaw`SELECT 1`; 
+} catch (error) {
+  console.error("Error al conectar a la BD:", error);
+}
 
 // Servidor
 const PORT = process.env.PORT || 5000;
